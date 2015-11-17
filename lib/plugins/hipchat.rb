@@ -1,5 +1,6 @@
 require 'openssl'
 require 'base64'
+require 'hipchat'
 
 module VictorOpsWebhook::Plugin
   class Hipchat < Sinatra::Base
@@ -34,7 +35,14 @@ module VictorOpsWebhook::Plugin
     end
 
     post '/hipchat/:key' do
-      # TODO post to hipchat room for route key params['key']
+      api_token = "" # FIXME get the api token from the ENV
+      room = "" # FIXME get the room from the ENV
+
+      client = HipChat::Client.new(api_token, :api_version => 'v2')
+
+      msg = "#{params['message_type']} #{params['alert_type']}: #{params['entity_id']} - #{params['state_message']}. Routing key: #{params['routing_key']}".gsub(/"/, '') # FIXME get rid of the quotes in a better way
+
+      client[room].send('VictorOps Hook', msg, :color => 'red')
     end
   end
 end
