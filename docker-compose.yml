@@ -1,0 +1,7 @@
+web:
+  build: .
+  command: /root/.rbenv/shims/bundle exec rerun lib/victorops-webhook.rb
+  volumes:
+    - ./lib:/victorops-webhook/lib
+  ports:
+  - 4567:4567
